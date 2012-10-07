@@ -9,7 +9,7 @@ describe PermanentRecords do
   let!(:muskrat)       { hole.muskrats.create!               }
   let!(:mole)          { hole.moles.create!                  }
   let!(:location)      { hole.create_location                }
-  let!(:difficulty)    { hole.create_difficulty              }
+  let!(:difficulty)    { hole.create_difficulty; pp hole.difficulty; hole.difficulty              }
   let!(:comments)      { 2.times.map {hole.comments.create!} }
   let!(:kitty)         { Kitty.create!                       }
 
@@ -121,7 +121,7 @@ describe PermanentRecords do
     it 'unsets deleted_at' do
       expect { subject }.to change {
         record.deleted_at
-      }.from(frozen_moment).to(nil)
+      }.to(nil)
     end
 
     it 'makes deleted? return false' do
@@ -140,7 +140,7 @@ describe PermanentRecords do
     context 'with dependent records' do
       context 'that are permanent' do
         it '' do
-          expect { subject }.to_not change(Muskrat.count)
+          expect { subject }.to_not change { Muskrat.count }
         end
 
         context 'that were deleted previously' do

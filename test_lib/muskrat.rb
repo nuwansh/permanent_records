@@ -3,7 +3,8 @@ class Muskrat < ActiveRecord::Base
 
   def destroy(*args)
     puts 'about to destroy'
-    super
+    r = super
     puts "destroyed :#{reload.deleted_at}"
+    r
   end
 end

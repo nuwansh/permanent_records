@@ -10,10 +10,15 @@ require 'active_record'
 require 'active_support'
 require 'permanent_records'
 
+module Rails
+  def self.env; 'test'end
+end
+
 config = YAML::load(IO.read(File.dirname(__FILE__) + '/../test_lib/database.yml'))
 require 'logger'
 ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/../test_lib/debug.log")
-ActiveRecord::Base.establish_connection(config[ENV['DB'] || 'sqlite3'])
+ActiveRecord::Base.configurations = config
+ActiveRecord::Base.establish_connection
 
 load 'schema.rb' if File.exist?(File.dirname(__FILE__) + "/../test_lib/schema.rb")
 
