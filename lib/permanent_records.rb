@@ -1,3 +1,4 @@
+# changed
 module PermanentRecords
   def self.included(base)
 
@@ -129,15 +130,22 @@ module PermanentRecords
           return permanently_delete_records_after{ destroy_without_permanent_records }
         end
       end
-      if active_record_3?
-        _run_destroy_callbacks do
-          deleted? || new_record? ? save : set_deleted_at(Time.now)
+
+      #if active_record_3?
+       unless deleted? || new_record?
+        with_transaction_returning_status do
+          run_callbacks :destroy do
+            set_deleted_at(Time.now)
+          end
         end
-      else
-        run_callbacks :before_destroy
-        deleted? || new_record? ? save : set_deleted_at(Time.now)
-        run_callbacks :after_destroy
-      end
+       end
+
+      #else
+      #  run_callbacks :before_destroy
+      #  deleted? || new_record? ? save : set_deleted_at(Time.now)
+      #  run_callbacks :after_destroy
+      #end
+
       self
     end
 
